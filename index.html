@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense Tracker Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"
+      integrity="sha384-/s6r730cdpShUMHbOWcM8Gdcld1e6ih4V9PhFGTaUxB+LoDHrpmPleY24JMukPfQ"
+      crossorigin="anonymous"
+      defer
+    ></script>
+    <script src="./app.js" type="module" defer></script>
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="sidebar">
+        <h1 class="logo">Spendwise</h1>
+        <nav class="nav">
+          <a class="nav__item nav__item--active" href="#overview">Overview</a>
+          <a class="nav__item" href="#expenses">Expenses</a>
+          <a class="nav__item" href="#analytics">Analytics</a>
+        </nav>
+        <section class="preferences">
+          <header>Preferences</header>
+          <label class="toggle">
+            <span>Dark mode</span>
+            <input id="theme-toggle" type="checkbox" />
+            <span class="slider"></span>
+          </label>
+        </section>
+      </aside>
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <h2 id="overview">Dashboard</h2>
+            <p class="subheading">Track your expenses at a glance.</p>
+          </div>
+          <div class="topbar__right">
+            <div class="filter-group">
+              <label for="filter-from">From</label>
+              <input id="filter-from" type="date" />
+            </div>
+            <div class="filter-group">
+              <label for="filter-to">To</label>
+              <input id="filter-to" type="date" />
+            </div>
+            <button id="reset-filters" class="button button--ghost">
+              Clear
+            </button>
+          </div>
+        </header>
+
+        <section class="cards">
+          <article class="card">
+            <header>Total Spend</header>
+            <div class="card__primary">
+              <span id="total-spend" class="card__value">$0.00</span>
+            </div>
+            <p class="card__secondary">
+              <span id="total-count">0 expenses</span> tracked this period.
+            </p>
+          </article>
+          <article class="card">
+            <header>Monthly Average</header>
+            <div class="card__primary">
+              <span id="monthly-average" class="card__value">$0.00</span>
+            </div>
+            <p class="card__secondary">
+              Based on expenses in the selected window.
+            </p>
+          </article>
+          <article class="card">
+            <header>Top Category</header>
+            <div class="card__primary">
+              <span id="top-category" class="card__value">–</span>
+            </div>
+            <p class="card__secondary">
+              <span id="top-category-amount">$0.00</span> spent overall.
+            </p>
+          </article>
+        </section>
+
+        <section class="panel" id="analytics">
+          <header class="panel__header">
+            <h3>Spending Trends</h3>
+            <span class="panel__subtitle">Visualize spending patterns.</span>
+          </header>
+          <div class="panel__content analytics">
+            <div class="chart-card">
+              <header>Spend by Category</header>
+              <canvas id="category-chart" role="img" aria-label="Spend by category chart"></canvas>
+            </div>
+            <div class="chart-card">
+              <header>Monthly Spend</header>
+              <canvas id="monthly-chart" role="img" aria-label="Monthly spend chart"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="expenses">
+          <header class="panel__header">
+            <h3>Expense Log</h3>
+            <span class="panel__subtitle">
+              Add new expenses and manage your history.
+            </span>
+          </header>
+          <div class="panel__content">
+            <form id="expense-form" class="expense-form">
+              <div class="form-row">
+                <label for="expense-name">Description</label>
+                <input
+                  id="expense-name"
+                  name="name"
+                  type="text"
+                  placeholder="e.g. Grocery run"
+                  required
+                />
+              </div>
+              <div class="form-row">
+                <label for="expense-amount">Amount</label>
+                <input
+                  id="expense-amount"
+                  name="amount"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="45.00"
+                  required
+                />
+              </div>
+              <div class="form-row">
+                <label for="expense-category">Category</label>
+                <select id="expense-category" name="category">
+                  <option value="Groceries">Groceries</option>
+                  <option value="Housing">Housing</option>
+                  <option value="Transport">Transport</option>
+                  <option value="Dining">Dining</option>
+                  <option value="Utilities">Utilities</option>
+                  <option value="Health">Health</option>
+                  <option value="Entertainment">Entertainment</option>
+                  <option value="Travel">Travel</option>
+                  <option value="Misc">Misc</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label for="expense-date">Date</label>
+                <input id="expense-date" name="date" type="date" required />
+              </div>
+              <div class="form-row form-row--wide">
+                <label for="expense-notes">Notes</label>
+                <input
+                  id="expense-notes"
+                  name="notes"
+                  type="text"
+                  placeholder="Optional notes"
+                />
+              </div>
+              <button class="button" type="submit">Add Expense</button>
+            </form>
+
+            <div class="expense-table-wrapper">
+              <table class="expense-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Notes</th>
+                    <th scope="col" class="actions">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="expense-rows"></tbody>
+              </table>
+              <p id="empty-state" class="empty-state">No expenses yet. Add one above.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
+
